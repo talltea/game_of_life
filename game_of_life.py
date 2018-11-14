@@ -58,7 +58,7 @@ def new_board():
     width = 50
     height = 50
     options = [0, 1]
-    probability = [.2, .8]
+    probability = [.8, .2]
     board = numpy.random.choice(
         options,
         size=(height, width),
@@ -66,7 +66,7 @@ def new_board():
     )
     return board
 
-def line_oscilator():
+def line_oscillator():
     board = numpy.array([
         [0,0,0,0,0],
         [0,0,1,0,0],

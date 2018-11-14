@@ -1,6 +1,7 @@
 import numpy
 import time
 
+
 def pp_array(board):
     output = ''
     for row in board:
@@ -42,17 +43,18 @@ def update_board(board):
                 (r_ind + 1, c_ind + 1),
             ]
             new_loc = [loc for loc in neighbor_loc if inbounds(loc, shape)]
-            n_neighbors = sum(board[y,x] for y,x in new_loc)
+            n_neighbors = sum(board[y, x] for y, x in new_loc)
             if elem:
                 # there's life here!
-                if n_neighbors >= 2 and n_neighbors <= 3:
+                if n_neighbors in [2, 3]:
                     new_board[r_ind][c_ind] = 1
             else:
                 # no life
-                if n_neighbors == 3:
+                if n_neighbors in [3]:
                     # reproduction
                     new_board[r_ind][c_ind] = 1
     return new_board
+
 
 def new_board():
     width = 50
@@ -66,15 +68,17 @@ def new_board():
     )
     return board
 
+
 def line_oscillator():
     board = numpy.array([
-        [0,0,0,0,0],
-        [0,0,1,0,0],
-        [0,0,1,0,0],
-        [0,0,1,0,0],
-        [0,0,0,0,0],
+        [0, 0, 0, 0, 0],
+        [0, 0, 1, 0, 0],
+        [0, 0, 1, 0, 0],
+        [0, 0, 1, 0, 0],
+        [0, 0, 0, 0, 0],
     ])
     return board
+
 
 def new_game():
     board = new_board()
@@ -83,6 +87,7 @@ def new_game():
         pp_array(board)
         time.sleep(1)
         board = update_board(board)
+
 
 if __name__ == '__main__':
     new_game()

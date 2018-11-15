@@ -6,8 +6,10 @@ def pp_array(board):
     output = ''
     for row in board:
         for elem in row:
-            if elem:
+            if elem == 1:
                 output += ' o'
+            elif elem == 2:
+                output += ' x'
             else:
                 output += ' .'
         output += '\n'
@@ -32,6 +34,43 @@ def loop_around(loc, shape):
     return (x, y)
 
 
+def conway_rules(curr, neighbors):
+    n_neighbors = sum(neighbors)
+    if curr:
+        # there's life here!
+        if n_neighbors in [2, 3]:
+            return 1
+    else:
+        # no life
+        if n_neighbors in [3]:
+            # reproduction
+            return 1
+    return 0
+
+
+def immigration_rules(curr, neighbors):
+    n_ones = sum([1 for n in neighbors if n==1])
+    n_twos = sum([1 for n in neighbors if n==2])
+    if n_twos > n_ones:
+        curr_val = 2
+    elif n_ones > n_twos:
+        curr_val = 1
+    else:
+        # only happens when there exists life, but it only has 2 neighbors
+        curr_val = curr
+    n_neighbors = n_ones + n_twos
+    if curr:
+        # there's life here!
+        if n_neighbors in [2, 3]:
+            return curr_val
+    else:
+        # no life
+        if n_neighbors in [3]:
+            # reproduction
+            return curr_val
+    return 0
+
+
 def update_board(board):
     shape = board.shape
     new_board = numpy.zeros(shape)
@@ -47,22 +86,12 @@ def update_board(board):
                 (r_ind + 1, c_ind),
                 (r_ind + 1, c_ind + 1),
             ]
-            new_loc = [loop_around(loc, shape) for loc in neighbor_loc]
-            # import pdb; pdb.set_trace()
-            n_neighbors = sum(board[loc] for loc in new_loc)
-            if elem:
-                # there's life here!
-                if n_neighbors in [2, 3]:
-                    new_board[r_ind][c_ind] = 1
-            else:
-                # no life
-                if n_neighbors in [3]:
-                    # reproduction
-                    new_board[r_ind][c_ind] = 1
+            neighbors = [board[loop_around(loc, shape)] for loc in neighbor_loc]
+            new_board[r_ind, c_ind] = immigration_rules(elem, neighbors)
     return new_board
 
 
-def new_board():
+def random_board():
     width = 50
     height = 50
     options = [0, 1]
@@ -73,6 +102,19 @@ def new_board():
         p=probability
     )
     return board
+
+def random_immigration_board():
+    width = 50
+    height = 50
+    options = [0, 1, 2]
+    probability = [.8, .1, .1]
+    board = numpy.random.choice(
+        options,
+        size=(height, width),
+        p=probability
+    )
+    return board
+
 
 
 def line_oscillator():
@@ -100,7 +142,7 @@ def basic_glider():
 
 
 def new_game():
-    board = basic_glider()
+    board = random_immigration_board()
 
     while True:
         pp_array(board)

@@ -4,3 +4,6 @@ Basic operation:
 
 Tests:
 pytest
+
+linting
+flake8 game_of_life.py

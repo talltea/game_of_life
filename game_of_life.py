@@ -14,17 +14,20 @@ def pp_array(board):
     print(output)
 
 
-def inbounds(loc, shape):
+def loop_around(loc, shape):
     x = loc[0]
     y = loc[1]
     max_x = shape[1] - 1
     max_y = shape[0] - 1
-    if x < 0 or x > max_x:
-        return False
-    if y < 0 or y > max_y:
-        return False
-    else:
-        return True
+    if x < 0:
+        x = max_y
+    elif x > max_y:
+        x = 0
+    if y < 0:
+        y = max_x
+    elif y > max_x:
+        y = 0
+    return (x, y)
 
 
 def update_board(board):
@@ -42,8 +45,9 @@ def update_board(board):
                 (r_ind + 1, c_ind),
                 (r_ind + 1, c_ind + 1),
             ]
-            new_loc = [loc for loc in neighbor_loc if inbounds(loc, shape)]
-            n_neighbors = sum(board[y, x] for y, x in new_loc)
+            new_loc = [loop_around(loc, shape) for loc in neighbor_loc]
+            # import pdb; pdb.set_trace()
+            n_neighbors = sum(board[loc] for loc in new_loc)
             if elem:
                 # there's life here!
                 if n_neighbors in [2, 3]:
@@ -71,17 +75,30 @@ def new_board():
 
 def line_oscillator():
     board = numpy.array([
-        [0, 0, 0, 0, 0],
-        [0, 0, 1, 0, 0],
-        [0, 0, 1, 0, 0],
-        [0, 0, 1, 0, 0],
-        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 1, 0],
+        [0, 0, 1, 0],
+        [0, 0, 1, 0],
+        [0, 0, 0, 0],
+    ])
+    return board
+
+
+def basic_glider():
+    board = numpy.array([
+        [0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 1, 0, 0],
+        [0, 1, 0, 1, 0, 0],
+        [0, 0, 1, 1, 0, 0],
+        [0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0],
     ])
     return board
 
 
 def new_game():
-    board = new_board()
+    board = basic_glider()
 
     while True:
         pp_array(board)

@@ -49,8 +49,8 @@ def conway_rules(curr, neighbors):
 
 
 def immigration_rules(curr, neighbors):
-    n_ones = sum([1 for n in neighbors if n==1])
-    n_twos = sum([1 for n in neighbors if n==2])
+    n_ones = sum([1 for n in neighbors if n == 1])
+    n_twos = sum([1 for n in neighbors if n == 2])
     if n_twos > n_ones:
         curr_val = 2
     elif n_ones > n_twos:
@@ -86,7 +86,8 @@ def update_board(board):
                 (r_ind + 1, c_ind),
                 (r_ind + 1, c_ind + 1),
             ]
-            neighbors = [board[loop_around(loc, shape)] for loc in neighbor_loc]
+            neighbors = [board[loop_around(loc, shape)]
+                         for loc in neighbor_loc]
             new_board[r_ind, c_ind] = immigration_rules(elem, neighbors)
     return new_board
 
@@ -103,6 +104,7 @@ def random_board():
     )
     return board
 
+
 def random_immigration_board():
     width = 50
     height = 50
@@ -114,7 +116,6 @@ def random_immigration_board():
         p=probability
     )
     return board
-
 
 
 def line_oscillator():

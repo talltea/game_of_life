@@ -1,5 +1,7 @@
 import numpy
 import time
+import pygame
+import sys
 
 
 class Cell(object):
@@ -114,8 +116,8 @@ def update_board(board):
 
 
 def random_board():
-    width = 50
-    height = 50
+    width = 100
+    height = 100
     options = [0, 1]
     probability = [.8, .2]
     board = numpy.random.choice(
@@ -170,12 +172,28 @@ def single_cell():
 
 
 def new_game():
-    board = random_immigration_board()
+    board = random_board()
 
+    pygame.init()
+    scale_factor = 5
+    screen = pygame.display.set_mode((board.shape[0]*scale_factor,board.shape[1]*scale_factor))
+    pygame.display.set_caption("Tea's Game of Life")
+
+    clock = pygame.time.Clock()
     while True:
-        pp_array(board)
-        time.sleep(1)
+        clock.tick(50)
+        # Process events
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                print('Thank you for playing!')
+                sys.exit()
+
+        screen.fill((0, 0, 0))
         board = update_board(board)
+        surface = pygame.surfarray.make_surface(board)
+        surface = pygame.transform.scale(surface, (100*scale_factor, 100*scale_factor))  # Scaled a bit.
+        screen.blit(surface, (0, 0))
+        pygame.display.flip()
 
 
 if __name__ == '__main__':

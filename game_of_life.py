@@ -2,6 +2,16 @@ import numpy
 import time
 
 
+class Cell(object):
+    """base class for a cell"""
+
+    __slots__ = ('value')
+
+    def __init__(self, value):
+        super(Cell, self).__init__()
+        self.value = value
+
+
 def pp_array(board):
     output = ''
     for row in board:
@@ -48,6 +58,20 @@ def conway_rules(curr, neighbors):
     return 0
 
 
+def b1_s12_rules(curr, neighbors):
+    n_neighbors = sum(neighbors)
+    if curr:
+        # there's life here!
+        if n_neighbors in [1, 2]:
+            return 1
+    else:
+        # no life
+        if n_neighbors in [1]:
+            # reproduction
+            return 1
+    return 0
+
+
 def immigration_rules(curr, neighbors):
     n_ones = sum([1 for n in neighbors if n == 1])
     n_twos = sum([1 for n in neighbors if n == 2])
@@ -55,14 +79,11 @@ def immigration_rules(curr, neighbors):
         curr_val = 2
     elif n_ones > n_twos:
         curr_val = 1
-    else:
-        # only happens when there exists life, but it only has 2 neighbors
-        curr_val = curr
     n_neighbors = n_ones + n_twos
     if curr:
         # there's life here!
         if n_neighbors in [2, 3]:
-            return curr_val
+            return curr
     else:
         # no life
         if n_neighbors in [3]:
@@ -120,11 +141,11 @@ def random_immigration_board():
 
 def line_oscillator():
     board = numpy.array([
-        [0, 0, 0, 0],
-        [0, 0, 1, 0],
-        [0, 0, 1, 0],
-        [0, 0, 1, 0],
-        [0, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        [0, 0, 1, 0, 0],
+        [0, 0, 1, 0, 0],
+        [0, 0, 1, 0, 0],
+        [0, 0, 0, 0, 0],
     ])
     return board
 
@@ -139,6 +160,12 @@ def basic_glider():
         [0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0],
     ])
+    return board
+
+
+def single_cell():
+    board = numpy.zeros((50, 50))
+    board[25][25] = 1
     return board
 
 

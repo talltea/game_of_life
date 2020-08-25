@@ -111,7 +111,7 @@ def update_board(board):
             ]
             neighbors = [board[loop_around(loc, shape)]
                          for loc in neighbor_loc]
-            new_board[r_ind, c_ind] = immigration_rules(elem, neighbors)
+            new_board[r_ind, c_ind] = update_rules(elem, neighbors)
     return new_board
 
 
@@ -122,20 +122,20 @@ def random_board():
     probability = [.8, .2]
     board = numpy.random.choice(
         options,
-        size=(height, width),
+        size=(width, height),
         p=probability
     )
     return board
 
 
 def random_immigration_board():
-    width = 50
+    width = 100
     height = 50
     options = [0, 1, 2]
     probability = [.8, .1, .1]
     board = numpy.random.choice(
         options,
-        size=(height, width),
+        size=(width, height),
         p=probability
     )
     return board
@@ -171,8 +171,9 @@ def single_cell():
     return board
 
 
+
 def new_game():
-    board = random_board()
+    board = init_board()
 
     pygame.init()
     scale_factor = 5
@@ -190,11 +191,16 @@ def new_game():
 
         screen.fill((0, 0, 0))
         board = update_board(board)
-        surface = pygame.surfarray.make_surface(board)
-        surface = pygame.transform.scale(surface, (100*scale_factor, 100*scale_factor))  # Scaled a bit.
+        color_board = board * 0b0101010 # 8-bit (RRGGGBB) color hack. -A
+        surface = pygame.surfarray.make_surface(color_board)
+        shape = board.shape
+        surface = pygame.transform.scale(surface, (shape[0]*scale_factor, shape[1]*scale_factor))  # Scaled a bit.
         screen.blit(surface, (0, 0))
         pygame.display.flip()
 
+
+init_board = random_immigration_board
+update_rules = immigration_rules
 
 if __name__ == '__main__':
     new_game()
